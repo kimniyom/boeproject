@@ -138,7 +138,7 @@ class ReportsController extends Controller {
         return $str;
     }
 
-    private function Getrecode($reportid, $year, $month, $week) {
+    private function Getrecode($reportid, $year, $month, $week,$hospcode) {
         $where = "";
         if ($month != "") {
             $where .= " AND month = '$month' ";
@@ -148,6 +148,12 @@ class ReportsController extends Controller {
 
         if ($week != "") {
             $where .= " AND week = '$week' ";
+        } else {
+            $where .= "";
+        }
+        
+        if ($hospcode != "") {
+            $where .= " AND hospcode = '$hospcode' ";
         } else {
             $where .= "";
         }
