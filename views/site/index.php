@@ -72,7 +72,7 @@ if (strlen($monthNow) < 2) {
                         </div>
                     </div>
                 <?php } else { ?>
-                    <h3 style=" margin-top: 0px;"><i class="fa fa-download"></i> บันนทึกผู้ป่วย</h3>
+                    <h3 style=" margin-top: 0px;"><i class="fa fa-download"></i> บันทึกผู้ป่วย</h3>
                     <div class="row">
                         <?php foreach ($report as $rs): ?>
                             <div class="col-md-3 col-lg-2 col-sm-4" style=" margin-bottom: 10px;">
