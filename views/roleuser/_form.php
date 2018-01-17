@@ -23,7 +23,7 @@ use yii\helpers\ArrayHelper;
         ],
     ]);
     ?>
-<?= $form->field($model, 'user_id')->textInput(['maxlength' => true, 'value' => $userid, 'readonly' => 'readonly']) ?>
+<?= $form->field($model, 'user_id')->hiddenInput(['maxlength' => true, 'value' => $userid, 'readonly' => 'readonly'])->label(false) ?>
 
     <div class="form-group">
 <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>

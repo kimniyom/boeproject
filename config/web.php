@@ -8,6 +8,7 @@ $config = [
     'name' => 'รายงาน ZERO  REPORT  (AFP/AEFI/Measles)',
     'basePath' => dirname(__DIR__),
     'language' => 'th',
+    'timeZone' => 'asia/bangkok', // this is my default
     'bootstrap' => ['log'],
     'aliases' => [
         '@bower' => '@vendor/bower-asset',

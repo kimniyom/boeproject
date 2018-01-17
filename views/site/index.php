@@ -115,33 +115,15 @@ if (strlen($monthNow) < 2) {
                 <input id="report_id" type="hidden"/>
                 <div class="row">
                     <div class="col-md-4 col-lg-4 col-sm-4">
-                        <select id="year" class="form-control" onchange="getDayofWeek()">
+                        <select id="year" class="form-control" onchange="getWeek()">
                             <?php for ($i = $yearNow; $i >= ($yearNow - 1); $i--): ?>
                                 <option value="<?php echo $i ?>"><?php echo ($i + 543) ?></option>
                             <?php endfor; ?>
                         </select>
                     </div>
                     <div class="col-md-4 col-lg-4 col-sm-4">
-                        <select id="month" class="form-control" onchange="getDayofWeek()">
-                            <?php foreach ($month as $m): ?>
-                                <option value="<?php echo $m['id'] ?>" <?php
-                                if ($m['id'] == $monthNows) {
-                                    echo "selected";
-                                }
-                                ?>><?php echo $m['month_th'] ?></option>
-                                    <?php endforeach; ?>
-                        </select>
-                    </div>
-                    <div class="col-md-4 col-lg-4 col-sm-4">
-                        <select id="week" class="form-control" onchange="getDayofWeek()">
-                            <?php for ($a = 1; $a <= 4; $a++): ?>
-                                <option value="<?php echo $a ?>" <?php
-                                if ($a == $WEEK) {
-                                    echo "selected";
-                                }
-                                ?>>สัปดาห์ที่ <?php echo $a ?></option>
-                                    <?php endfor; ?>
-                        </select>
+                        <div id="showweek"></div>
+                       
                     </div>
 
                 </div>
@@ -157,7 +139,7 @@ if (strlen($monthNow) < 2) {
 
 <?php
 $this->registerJs("
-        getDayofWeek();
+        getWeek();
         Highcharts.chart('chart', {
 
     title: {
@@ -188,12 +170,21 @@ $this->registerJs("
         $("#popupconfigrecode").modal();
     }
 
+    function getWeek(){
+        var url = "<?php echo Url::to(['report/getweekofyear']) ?>";
+        var year = $("#year").val();
+        var data = {year: year};
+        $.post(url, data, function (datas) {
+            $("#showweek").html(datas);
+        });
+    }
+
     function getDayofWeek() {
         var url = "<?php echo Url::to(['report/getdayofweek']) ?>";
         var year = $("#year").val();
-        var month = $("#month").val();
+        //var month = $("#month").val();
         var week = $("#week").val();
-        var data = {year: year, month: month, week: week};
+        var data = {year: year,week: week};
         $.post(url, data, function (datas) {
             if (datas == "0") {
                 $("#btn-save").hide();
@@ -207,9 +198,9 @@ $this->registerJs("
 
     function recode() {
         var year = $("#year").val();
-        var month = $("#month").val();
+        //var month = $("#month").val();
         var week = $("#week").val();
         var report_id = $("#report_id").val();
-        window.location = "<?php echo Url::to(['report/index']) ?>" + "&reportid=" + report_id + "&year=" + year + "&month=" + month + "&week=" + week;
+        window.location = "<?php echo Url::to(['report/index']) ?>" + "&reportid=" + report_id + "&year=" + year + "&week=" + week;
     }
 </script>

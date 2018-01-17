@@ -77,7 +77,7 @@ class RoleuserController extends Controller {
         $model = new Roleuser();
         $user = \dektrium\user\models\User::findOne(['id' => $userid]);
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect(['view', 'userid' => $userid]);
         }
 
         return $this->render('create', [
@@ -98,7 +98,7 @@ class RoleuserController extends Controller {
         $model = $this->findModel($id);
         $user = \dektrium\user\models\User::findOne(['id' => $model->user_id]);
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect(['view', 'userid' => $model->user_id]);
         }
 
         return $this->render('update', [

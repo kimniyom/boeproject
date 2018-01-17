@@ -124,4 +124,36 @@ class WeekController extends Controller
 
         throw new NotFoundHttpException('The requested page does not exist.');
     }
+
+    public function actionSetweek(){
+        $yearNow = date("Y");
+        $sql = "SELECT MAX(year) as year FROM week";
+        $rs = Yii::$app->db->createCommand($sql)->queryOne();
+        if($rs['year'] > $yearNow || $rs['year'] == ""){
+            $dateLastweek = $yearNow."-12-31";
+            $sqlCountWeek = "SELECT WEEK('$dateLastweek') AS lastweek";
+
+            $rss = Yii::$app->db->createCommand($sqlCountWeek)->queryOne();
+            $lastweek = ($rss['lastweek'] + 1);
+            for($i=1;$i<=$lastweek;$i++):
+                $date = new \DateTime();
+                $date->setISODate($yearNow,$i);
+                $start = $date->format("Y-m-d");
+                $date->setISODate($yearNow,$i,7);
+                $end = $date->format("Y-m-d");
+
+                //echo "สัปดาห์ที่".$i."ประกอบด้วยวันที่ : ".$start." - ".$end."<br/>";
+
+                $columns = array(
+                    'year' => $yearNow,
+                    'datestart' => $start,
+                    'dateend' => $end,
+                    'week' => $i
+                    );
+                Yii::$app->db->createCommand()
+                            ->insert("week",$columns)
+                            ->execute();
+            endfor;
+        }
+    }
 }

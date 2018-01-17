@@ -336,4 +336,31 @@ class ReportController extends Controller {
                 ->execute();
     }
 
+    public function actionGetweekofyear(){
+        $year = \Yii::$app->request->post('year');
+        $weekNow = date("W", strtotime(date('Y-m-d')));
+        $weekNows = $weekNow;
+        $yearNow = date("Y");
+        if($year < $yearNow){
+            $sql = "SELECT * FROM week WHERE year = '$year'";
+            $week = Yii::$app->db->createCommand($sql)->queryAll();
+        } else if($year == $yearNow){
+            $sql = "SELECT * FROM week WHERE year = '$year' AND week <= '$weekNows' ";
+            $week = Yii::$app->db->createCommand($sql)->queryAll();
+        }
+
+        $str = "";
+        $str .= "<select id='week' class='form-control'>";
+        foreach($week as $rs):
+            if($weekNows == $rs['week'] && $yearNow == $year){
+                $select = "selected";
+            } else {
+                $select = "";
+            }
+            $str .= "<option value='".$rs['week']."' $select >".$rs['week']."</option>";
+        endforeach;
+        $str .= "</select>";
+        echo $str;
+    }
+
 }

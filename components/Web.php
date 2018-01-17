@@ -48,4 +48,37 @@ class Web extends Component {
         return $role;
     }
 
+    public function WeekOfYear($year,$week){
+        //$date = date("Y-m-d");
+        //$week = date("N", strtotime($date));//นับลำดับวันที่ในสัปดาห์สัปดาห์ เช่น วันที่ 1,2,3.....
+        //$week1 = date("W", strtotime($date));//นับสัปดาห์ตามจริงของปี เช่นวันนี้เป็นสัปดาห์ที่ 16 ของปี 2014
+        //$start = date("Y-m-d",strtotime("-".($week-1)." days"));
+        //$end = date("Y-m-d",strtotime("+".(7-$week)." days"));
+        $date = new DateTime();
+        $date->setISODate($year,$week);
+        $start = $date->format("Y-m-d");
+        $date->setISODate($year,$week,7);
+        $end = $date->format("Y-m-d");
+
+        //echo "วันนี้คือวันที่ : ".$week." ของสัปดาห์"."<br/>";
+        //echo "วันนี้อยู่ในสัปดาห์ที่ : ".$week1." ของปี"."<br/>";
+        echo "ประกอบด้วยวันที่ : ".$start." - ".$end."<br/>";
+
+    }
+
+    public function SetWeek(){
+        $yearNow = date("Y");
+        $sql = "SELECT MAX(year) as year FROM week";
+        $rs = Yii::$app->db->createCommand($sql)->queryOne();
+        if($rs['year'] > $yearNow){
+            $dateLastweek = $yearNow."-12-31";
+            $sqlCountWeek = "SELECT WEEK('$dateLastweek') AS lastweek";
+            $rss = Yii::$app->db->createCommand($sql)->queryOne();
+            $lastweek = ($rss['lastweek'] + 1);
+            for($i=1;$i<=$lastweek;$i++):
+
+            endfor;
+        }
+    }
+
 }
