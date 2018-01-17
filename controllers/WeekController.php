@@ -126,7 +126,9 @@ class WeekController extends Controller
     }
 
     public function actionSetweek(){
+        echo "กำลังตั้งค่า ...";
         $yearNow = date("Y");
+        //$yearNow = "2016";
         $sql = "SELECT MAX(year) as year FROM week";
         $rs = Yii::$app->db->createCommand($sql)->queryOne();
         if($rs['year'] > $yearNow || $rs['year'] == ""){
@@ -155,5 +157,7 @@ class WeekController extends Controller
                             ->execute();
             endfor;
         }
+
+        return $this->redirect(['site/index']);
     }
 }

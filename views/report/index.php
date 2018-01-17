@@ -256,7 +256,6 @@ $this->registerJs('
         var address = $("#address").val();
         var reportid = $("#reportid").val();
         var week = "<?php echo $weeks['week'] ?>";
-        var month = "<?php echo $weeks['month'] ?>";
         var year = "<?php echo $weeks['year'] ?>";
         var cidlength = cid.length;
         var hospcode = "<?php echo $profile['location'] ?>";
@@ -270,7 +269,7 @@ $this->registerJs('
             return false;
         }
 
-        var data = {cid: cid, name: name, address: address, reportid: reportid, week: week, hospcode: hospcode, month: month, year: year};
+        var data = {cid: cid, name: name, address: address, reportid: reportid, week: week, hospcode: hospcode, year: year};
         $.post(url, data, function (datas) {
             if (datas == 1) {
                 alert("บันทึกคนนี้ในช่วงเวลานี้แล้ว ....");
@@ -285,10 +284,9 @@ $this->registerJs('
         var url = "<?php echo Url::to(['report/getreport']) ?>";
         var reportid = $("#reportid").val();
         var week = "<?php echo $weeks['week'] ?>";
-        var month = "<?php echo $weeks['month'] ?>";
         var year = "<?php echo $weeks['year'] ?>";
         var hospcode = "<?php echo $profile['location'] ?>";
-        var data = {reportid: reportid, week: week, year: year, month: month, hospcode: hospcode};
+        var data = {reportid: reportid, week: week, year: year, hospcode: hospcode};
         $.post(url, data, function (datas) {
             $("#report").html(datas);
             Oncancel();
@@ -301,10 +299,9 @@ $this->registerJs('
             var url = "<?php echo Url::to(['report/recordzeroreport']) ?>";
             var reportid = $("#reportid").val();
             var week = "<?php echo $weeks['week'] ?>";
-            var month = "<?php echo $weeks['month'] ?>";
             var year = "<?php echo $weeks['year'] ?>";
             var hospcode = "<?php echo $profile['location'] ?>";
-            var data = {reportid: reportid, week: week, year: year, month: month, hospcode: hospcode};
+            var data = {reportid: reportid, week: week, year: year,hospcode: hospcode};
             $.post(url, data, function (datas) {
                 window.location.reload();
             });
@@ -317,10 +314,9 @@ $this->registerJs('
             var url = "<?php echo Url::to(['report/deletezeroreport']) ?>";
             var reportid = $("#reportid").val();
             var week = "<?php echo $weeks['week'] ?>";
-            var month = "<?php echo $weeks['month'] ?>";
             var year = "<?php echo $weeks['year'] ?>";
             var hospcode = "<?php echo $profile['location'] ?>";
-            var data = {reportid: reportid, week: week, year: year, month: month, hospcode: hospcode};
+            var data = {reportid: reportid, week: week, year: year,hospcode: hospcode};
             $.post(url, data, function (datas) {
                 window.location.reload();
             });

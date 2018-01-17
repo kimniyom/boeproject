@@ -40,15 +40,15 @@ class ReportController extends Controller {
      * Lists all Report models.
      * @return mixed
      */
-    public function actionIndex($reportid, $year, $month, $week) {
+    public function actionIndex($reportid, $year, $week) {
         //$web = new Web();
         //$role = $web->Getroleuser();
         $data['user'] = Profile::findOne(['user_id' => Yii::$app->user->identity->id]);
         //$sql = "SELECT CID,CONCAT(CID,' ',NAME,' ',LNAME) AS PNAME FROM takisdb.person WHERE HOSPCODE IN($role) AND DISCHARGE = '9' limit 1000";
         //$data['person'] = \Yii::$app->db->createCommand($sql)->queryAll();
 
-        $data['weeks'] = Week::findOne(['year' => $year, 'month' => $month, 'week' => $week]);
-        $data['zero'] = Zerorecord::findOne(['report_id' => $reportid, 'year' => $year, 'month' => $month, 'week' => $week, 'hospcode' => $data['user']['location']]);
+        $data['weeks'] = Week::findOne(['year' => $year,'week' => $week]);
+        $data['zero'] = Zerorecord::findOne(['report_id' => $reportid, 'year' => $year,'week' => $week, 'hospcode' => $data['user']['location']]);
         $data['model'] = Masreport::findOne(['reportid' => $reportid]);
         return $this->render('index', $data);
     }
@@ -196,11 +196,10 @@ class ReportController extends Controller {
         $reportid = \Yii::$app->request->post('reportid');
         $week = \Yii::$app->request->post('week');
         $year = \Yii::$app->request->post('year');
-        $month = \Yii::$app->request->post('month');
         $hospcode = \Yii::$app->request->post('hospcode');
         $userid = Yii::$app->user->identity->id;
 
-        $sql = "SELECT * FROM report WHERE reportid = '$reportid' AND cid = '$cid' AND week = '$week' AND month = '$month' AND year = '$year'";
+        $sql = "SELECT * FROM report WHERE reportid = '$reportid' AND cid = '$cid' AND week = '$week' AND year = '$year'";
         $rs = \Yii::$app->db->createCommand($sql)->queryOne();
         if (!empty($rs['cid'])) {
             echo "1";
@@ -213,7 +212,6 @@ class ReportController extends Controller {
                 "week" => $week,
                 "userid" => $userid,
                 "hospcode" => $hospcode,
-                "month" => $month,
                 "year" => $year,
                 "createdate" => date("Y-m-d H:i:s")
             );
@@ -230,10 +228,9 @@ class ReportController extends Controller {
         $week = \Yii::$app->request->post('week');
         $reportid = \Yii::$app->request->post('reportid');
         $year = \Yii::$app->request->post('year');
-        $month = \Yii::$app->request->post('month');
         $sql = "SELECT r.*,p.name AS author
                 FROM report r INNER JOIN profile p ON r.userid = p.user_id
-                WHERE r.reportid = '$reportid' AND r.week = '$week' AND r.year = '$year' AND r.month = '$month' AND r.hospcode IN($role)";
+                WHERE r.reportid = '$reportid' AND r.week = '$week' AND r.year = '$year' AND r.hospcode IN($role)";
 
         $data['report'] = \Yii::$app->db->createCommand($sql)->queryAll();
 
@@ -281,10 +278,9 @@ class ReportController extends Controller {
     public function actionGetdayofweek() {
         $Web = new Web();
         $year = \Yii::$app->request->post('year');
-        $month = \Yii::$app->request->post('month');
         $week = \Yii::$app->request->post('week');
 
-        $rs = Week::findOne(['year' => $year, 'month' => $month, 'week' => $week]);
+        $rs = Week::findOne(['year' => $year,'week' => $week]);
         if ($rs) {
             $day = "วันที่ " . $Web->thaidate($rs['datestart']) . " ถึง " . $Web->thaidate($rs['dateend']);
         } else {
@@ -296,19 +292,17 @@ class ReportController extends Controller {
 
     public function actionRecordzeroreport() {
         $year = \Yii::$app->request->post('year');
-        $month = \Yii::$app->request->post('month');
         $week = \Yii::$app->request->post('week');
         $reportid = \Yii::$app->request->post('reportid');
         $hospcode = \Yii::$app->request->post('hospcode');
 
         Yii::$app->db->createCommand()
-                ->delete("report", "reportid = '$reportid' AND hospcode = '$hospcode' AND week = '$week' AND month = '$month'")
+                ->delete("report", "reportid = '$reportid' AND hospcode = '$hospcode' AND week = '$week'")
                 ->execute();
 
         $columns = array(
             "report_id" => $reportid,
             "year" => $year,
-            "month" => $month,
             "week" => $week,
             "hospcode" => $hospcode,
             "userid" => Yii::$app->user->identity->id,
@@ -322,42 +316,51 @@ class ReportController extends Controller {
 
     public function actionDeletezeroreport() {
         $year = \Yii::$app->request->post('year');
-        $month = \Yii::$app->request->post('month');
         $week = \Yii::$app->request->post('week');
         $reportid = \Yii::$app->request->post('reportid');
         $hospcode = \Yii::$app->request->post('hospcode');
         
         Yii::$app->db->createCommand()
-                ->delete("report", "reportid = '$reportid' AND hospcode = '$hospcode' AND week = '$week' AND month = '$month' AND year = '$year' ")
+                ->delete("report", "reportid = '$reportid' AND hospcode = '$hospcode' AND week = '$week' AND year = '$year' ")
                 ->execute();
         
         Yii::$app->db->createCommand()
-                ->delete("zerorecord", "report_id = '$reportid' AND hospcode = '$hospcode' AND week = '$week' AND month = '$month' AND year = '$year'")
+                ->delete("zerorecord", "report_id = '$reportid' AND hospcode = '$hospcode' AND week = '$week' AND year = '$year'")
                 ->execute();
     }
 
     public function actionGetweekofyear(){
         $year = \Yii::$app->request->post('year');
         $weekNow = date("W", strtotime(date('Y-m-d')));
+        $week = \Yii::$app->request->post('week');
         $weekNows = $weekNow;
         $yearNow = date("Y");
         if($year < $yearNow){
             $sql = "SELECT * FROM week WHERE year = '$year'";
-            $week = Yii::$app->db->createCommand($sql)->queryAll();
+            $weekdata = Yii::$app->db->createCommand($sql)->queryAll();
         } else if($year == $yearNow){
             $sql = "SELECT * FROM week WHERE year = '$year' AND week <= '$weekNows' ";
-            $week = Yii::$app->db->createCommand($sql)->queryAll();
+            $weekdata = Yii::$app->db->createCommand($sql)->queryAll();
         }
 
         $str = "";
-        $str .= "<select id='week' class='form-control'>";
-        foreach($week as $rs):
-            if($weekNows == $rs['week'] && $yearNow == $year){
-                $select = "selected";
+        $str .= "<select id='week' class='form-control' onchange='getWeek()'>";
+        foreach($weekdata as $rs):
+            if($week == ""){
+                if($weekNows == $rs['week'] && $yearNow == $year){
+                    $select = "selected";
+                } else {
+                    $select = "";
+                }
             } else {
-                $select = "";
+                if($week == $rs['week']){
+                    $select = "selected";
+                } else {
+                    $select = "";
+                }
+                
             }
-            $str .= "<option value='".$rs['week']."' $select >".$rs['week']."</option>";
+            $str .= "<option value='".$rs['week']."' $select>สัปดาห์ที่ ".$rs['week']."</option>";
         endforeach;
         $str .= "</select>";
         echo $str;

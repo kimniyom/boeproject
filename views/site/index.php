@@ -64,7 +64,7 @@ if (strlen($monthNow) < 2) {
                                 </button></a>
                         </div>
                         <div class="col-md-3 col-lg-3 col-sm-4">
-                            <a href="<?php echo Url::to(['week/index']) ?>">
+                            <a href="<?php echo Url::to(['week/setweek']) ?>">
                                 <button class="btn btn-default btn-block">
                                     <i class="fa fa-clock-o fa-2x text-primary"></i><hr/>
                                     <h4>ตั้งค่าสัปดาห์</h4>
@@ -105,7 +105,7 @@ if (strlen($monthNow) < 2) {
 </div>
 
 <div class="modal fade" tabindex="-1" role="dialog" id="popupconfigrecode" data-backdrop="static">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-sm" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -114,24 +114,26 @@ if (strlen($monthNow) < 2) {
             <div class="modal-body">
                 <input id="report_id" type="hidden"/>
                 <div class="row">
-                    <div class="col-md-4 col-lg-4 col-sm-4">
+                    <div class="col-md-6 col-lg-6 col-sm-12">
+                        <label>ปี พ.ศ.</label>
                         <select id="year" class="form-control" onchange="getWeek()">
                             <?php for ($i = $yearNow; $i >= ($yearNow - 1); $i--): ?>
                                 <option value="<?php echo $i ?>"><?php echo ($i + 543) ?></option>
                             <?php endfor; ?>
                         </select>
                     </div>
-                    <div class="col-md-4 col-lg-4 col-sm-4">
+                    <div class="col-md-6 col-lg-6 col-sm-12">
+                        <label>สัปดาห์</label>
                         <div id="showweek"></div>
                        
                     </div>
 
                 </div>
-
+                <hr/>
                 <div id="day" style=" text-align: center;"></div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" id="btn-save" onclick="recode()">ตกลง</button>
+                <button type="button" class="btn btn-primary btn-block btn-lg" id="btn-save" onclick="recode()"><i class='fa fa-save'></i> ตกลง</button>
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
@@ -173,9 +175,11 @@ $this->registerJs("
     function getWeek(){
         var url = "<?php echo Url::to(['report/getweekofyear']) ?>";
         var year = $("#year").val();
-        var data = {year: year};
+        var week = $("#week").val();
+        var data = {year: year,week: week};
         $.post(url, data, function (datas) {
             $("#showweek").html(datas);
+            getDayofWeek();
         });
     }
 
@@ -186,9 +190,9 @@ $this->registerJs("
         var week = $("#week").val();
         var data = {year: year,week: week};
         $.post(url, data, function (datas) {
-            if (datas == "0") {
+            if(datas == "0"){
                 $("#btn-save").hide();
-                $("#day").html("ยังไม่ได้กำหนดช่วงเวลา ...!!!");
+                $("#day").html(datas);
             } else {
                 $("#day").html(datas);
                 $("#btn-save").show();
